@@ -1,0 +1,39 @@
+version: '3'
+services:
+
+  nginx:
+    build: ./services/nginx
+    volumes:
+      - "app_static:/var/www/html/static"
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    links:
+      - app
+
+  app:
+    build: .
+    volumes:
+      - "app_static:/usr/local/app/static"
+    expose:
+      - 8000
+    depends_on:
+      - db
+    links:
+      - db
+
+  db:
+    build: ./services/db
+    environment:
+      POSTGRES_USER: shtxtdjapp
+      POSTGRES_PASSWORD: shtxtdjapp
+      POSTGRES_DB: shtxtdjapp
+    volumes:
+      - "db:/var/lib/postgresql/data"
+    expose:
+      - 5432
+
+volumes:
+  db: {}
+  app_static: {}
